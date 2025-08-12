@@ -5,7 +5,7 @@ import EditSubSectionModal from '../components/editModals/subSection';
 import DeleteSubSectionModal from '../components/deleteModal/deleteSubSection';
 import { useNavigate } from 'react-router-dom';
 
-const SubsectionsManagement = () => {
+const SubSections = () => {
   const [categories, setCategories] = useState([]);
   const [expandedSubsections, setExpandedSubsections] = useState([]);
   const [allExpanded, setAllExpanded] = useState(false);
@@ -139,4 +139,4 @@ const SubsectionsManagement = () => {
   );
 };
 
-export default SubsectionsManagement;
+export default SubSections;
