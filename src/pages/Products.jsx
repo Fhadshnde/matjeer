@@ -205,22 +205,15 @@ const ProductsManagement = () => {
                     ></div>
                   ))}
                 </div>
-                <div className="flex items-center justify-between mb-3 my-3">
-                  <div className="flex items-center gap-4">
-                    <div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-bold text-white">{product.price}</span>
-                        <span className="text-sm text-[#94A3B8]">IQD</span>
-                      </div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm text-[#94A3B8] line-through">{product.originalPrice} IQD</span>
-                        <span className="px-2 py-0.5 text-xs font-semibold text-white bg-gradient-to-r from-[#F97316] to-[#EA580C] rounded-md">
-                          -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
-                        </span>
-                      </div>
-                    </div>
+                <div className="flex flex-col mb-3 my-3">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-bold text-white">{product.originalPrice}</span>
+                    <span className="text-sm text-[#94A3B8]">IQD</span>
                   </div>
-                  <span className="px-2 py-1 text-xs font-semibold text-white bg-[#10B981] rounded-full">In Stock</span>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-lg font-semibold text-[#94A3B8]">{product.wholesalePrice}</span>
+                    <span className="text-sm text-[#94A3B8]">IQD</span>
+                  </div>
                 </div>
                 <div className="flex items-center justify-between pt-3 border-t border-white/5">
                   <div className="flex items-center gap-2">
