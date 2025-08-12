@@ -36,7 +36,8 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
     name: '',
     description: '',
     originalPrice: '',
-    price: '',
+    wholesalePrice: '',
+    price: 0,
     stock: '',
     mainImageUrl: '',
     categoryId: '',
@@ -44,6 +45,11 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
     supplierId: '',
     colors: [],
     media: [],
+    measurements: [
+      { name: 'Small', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: false },
+      { name: 'Medium', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: true },
+      { name: 'Large', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: false }
+    ],
   });
 
   const fetchProductData = async () => {
@@ -63,6 +69,13 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
         categoryId: fetchedProduct.categoryId || '',
         sectionId: fetchedProduct.sectionId || '',
         supplierId: fetchedProduct.supplierId || '',
+        price: fetchedProduct.price || 0,
+        wholesalePrice: fetchedProduct.wholesalePrice || '',
+        measurements: fetchedProduct.measurements && fetchedProduct.measurements.length > 0 ? fetchedProduct.measurements : [
+            { name: 'Small', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: false },
+            { name: 'Medium', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: true },
+            { name: 'Large', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: false }
+        ],
       });
       await fetchSections(fetchedProduct.categoryId);
     } catch (e) {
@@ -235,9 +248,19 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
     newMedia.splice(index, 1);
     setProductData((prevData) => ({ ...prevData, media: newMedia }));
   };
+  
+  const handleMeasurementChange = (index, e) => {
+    const { name, value, type, checked } = e.target;
+    const newMeasurements = [...productData.measurements];
+    newMeasurements[index] = {
+      ...newMeasurements[index],
+      [name]: type === 'checkbox' ? checked : (type === 'number' ? parseFloat(value) : value),
+    };
+    setProductData(prevData => ({ ...prevData, measurements: newMeasurements }));
+  };
 
   const editProduct = async () => {
-    if (!productData.name || !productData.price || productData.stock === null ||
+    if (!productData.name || !productData.wholesalePrice || productData.stock === null ||
       !productData.mainImageUrl || !productData.categoryId ||
       !productData.sectionId || !productData.supplierId) {
       alert('Please fill all required fields');
@@ -248,7 +271,8 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
       name: productData.name,
       description: productData.description || null,
       originalPrice: productData.originalPrice ? parseFloat(productData.originalPrice) : null,
-      price: parseFloat(productData.price),
+      wholesalePrice: parseFloat(productData.wholesalePrice),
+      price: 0,
       stock: parseInt(productData.stock, 10),
       mainImageUrl: productData.mainImageUrl,
       categoryId: parseInt(productData.categoryId, 10),
@@ -264,6 +288,7 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
         })) : null,
       })),
       media: productData.media,
+      measurements: productData.measurements
     };
 
     try {
@@ -280,8 +305,8 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
   };
 
   const discountPercentage =
-    (productData.originalPrice && productData.price)
-      ? Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100)
+    (productData.originalPrice && productData.wholesalePrice)
+      ? Math.round(((productData.originalPrice - productData.wholesalePrice) / productData.originalPrice) * 100)
       : null;
 
   const modalContent = (
@@ -336,8 +361,8 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
                     </div>
                   ) : (
                     <div className="w-fit h-fit">
-                      <img className="h-18 w-18" src={productData.mainImageUrl || ''} alt="Main product" />
-                      <button type="button" className="bg-red-400 cursor-pointer w-18 rounded-b-xl mx-auto block" onClick={deleteMainImage}>
+                      <img className="h-24 w-24 object-cover" src={productData.mainImageUrl || ''} alt="Main product" />
+                      <button type="button" className="bg-red-400 cursor-pointer w-24 rounded-b-xl mx-auto block" onClick={deleteMainImage}>
                         حذف
                       </button>
                     </div>
@@ -427,11 +452,11 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#94A3B8] mb-2">سعر البيع *</label>
+                  <label className="block text-sm font-medium text-[#94A3B8] mb-2">سعر الجملة *</label>
                   <input
-                    value={productData.price}
+                    value={productData.wholesalePrice}
                     onChange={handleInputChange}
-                    name="price"
+                    name="wholesalePrice"
                     type="number"
                     step="0.01"
                     required
@@ -451,20 +476,20 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
                     placeholder="0"
                   />
                 </div>
-                {discountPercentage && (
+                {/* {discountPercentage && (
                   <div className="flex items-center justify-center p-2 rounded-lg bg-[#F97316]/20">
                     <p className="text-sm font-bold text-[#F97316]">{discountPercentage}% خصم</p>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
 
             <div className="space-y-4">
               <h4 className="text-lg font-semibold text-white flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#5E54F2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h10m-3 3v6m-2-3h4m1 4h-12a2 2 0 01-2-2v-6a2 2 0 012-2h12a2 2 0 012 2v6a2 2 0 01-2 2z"></path>
+                <svg className="w-5 h-5 text-[#F97316]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
-                التصنيف والمورد
+                التصنيف
               </h4>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div>
@@ -517,89 +542,180 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-white flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#5E54F2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zm0 0v-2a2 2 0 012-2h6a2 2 0 012 2v2M9 5h6"></path>
-                </svg>
-                الألوان والمقاسات
-              </h4>
+              <div className="flex items-center justify-between">
+                <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#8B5CF6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                  </svg>
+                  الألوان والمتغيرات
+                </h4>
+                <button
+                  onClick={addColor}
+                  type="button"
+                  className="px-3 py-1.5 bg-[#5E54F2]/20 text-[#5E54F2] text-sm font-medium rounded-lg hover:bg-[#5E54F2]/30 transition-all flex items-center gap-1"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                  إضافة لون
+                </button>
+              </div>
               <div className="space-y-4">
-                {productData.colors.map((color, colorIndex) => (
-                  <div key={colorIndex} className="bg-[#0F0F0F] rounded-lg p-4 border border-white/10">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="flex-grow">
-                        <label className="block text-sm font-medium text-[#94A3B8] mb-1">اسم اللون</label>
+                {productData.colors.length > 0 ? (
+                  productData.colors.map((color, colorIndex) => (
+                    <div key={colorIndex} className="bg-[#0F0F0F] border border-white/10 rounded-xl p-4">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <input
+                            value={color.code}
+                            onChange={e => handleColorChange(colorIndex, e)}
+                            name="code"
+                            type="color"
+                            className="w-12 h-12 bg-transparent border-0 rounded-lg cursor-pointer"
+                          />
+                          <div className="flex-1">
+                            <input
+                              value={color.name}
+                              onChange={e => handleColorChange(colorIndex, e)}
+                              name="name"
+                              type="text"
+                              placeholder="اسم اللون"
+                              className="w-full px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => removeColor(colorIndex)}
+                          type="button"
+                          className="p-2 text-red-400 hover:text-red-300 hover:bg-white/5 rounded-lg transition-all"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="mb-3">
+                        <label className="text-xs text-[#94A3B8]">المخزون لهذا اللون</label>
                         <input
-                          value={color.name}
-                          onChange={(e) => handleColorChange(colorIndex, e)}
-                          name="name"
-                          type="text"
-                          className="w-full px-3 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg text-white"
-                          placeholder="أدخل اسم اللون"
+                          value={color.stock}
+                          onChange={e => handleColorChange(colorIndex, e)}
+                          name="stock"
+                          type="number"
+                          placeholder="0"
+                          className="w-full mt-1 px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-[#94A3B8] mb-1">رمز اللون</label>
-                        <input
-                          value={color.code}
-                          onChange={(e) => handleColorChange(colorIndex, e)}
-                          name="code"
-                          type="color"
-                          className="w-12 h-10 border border-white/10 rounded-lg cursor-pointer bg-[#1A1A1A]"
-                        />
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="text-xs text-[#94A3B8]">مقاسات مختلفة (اختياري)</label>
+                          <button
+                            onClick={() => toggleSizes(colorIndex)}
+                            type="button"
+                            className="text-xs text-[#F97316] hover:text-[#EA580C] font-medium"
+                          >
+                            {color.sizes ? 'إزالة المقاسات' : 'إضافة مقاسات'}
+                          </button>
+                        </div>
+                        {color.sizes && (
+                          <div className="grid grid-cols-3 gap-2">
+                            {color.sizes.map((size, sizeIndex) => (
+                              <div key={size.size} className="flex items-center gap-2">
+                                <span className="text-sm text-white w-8">{size.size}:</span>
+                                <input
+                                  value={size.stock}
+                                  onChange={e => handleSizeChange(colorIndex, sizeIndex, e)}
+                                  type="number"
+                                  placeholder="0"
+                                  className="flex-1 px-2 py-1 bg-[#1A1A1A] border border-white/10 rounded text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      <button type="button" onClick={() => removeColor(colorIndex)} className="text-red-500 hover:text-red-600 transition-colors self-end p-2 rounded-md">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1H9a1 1 0 00-1 1v3m6 0H8"></path>
-                        </svg>
-                      </button>
                     </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={!!color.sizes}
-                            onChange={() => toggleSizes(colorIndex)}
-                            className="h-4 w-4 text-[#5E54F2] focus:ring-[#5E54F2] border-gray-600 rounded"
-                          />
-                          <span className="text-sm text-white font-medium">إضافة مقاسات</span>
-                        </div>
-                        <div className="flex-grow text-left">
-                          <label className="block text-sm font-medium text-[#94A3B8] mb-1">المخزون الإجمالي للون</label>
-                          <input
-                            type="number"
-                            name="stock"
-                            value={color.stock}
-                            onChange={(e) => handleColorChange(colorIndex, e)}
-                            className="w-20 px-2 py-1 bg-[#1A1A1A] border border-white/10 rounded-lg text-white"
-                            placeholder="0"
-                            disabled={!!color.sizes}
-                          />
-                        </div>
-                      </div>
-                      {color.sizes && (
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
-                          {color.sizes.map((size, sizeIndex) => (
-                            <div key={sizeIndex} className="flex items-center gap-2 bg-[#1A1A1A] rounded-lg p-2">
-                              <span className="text-sm font-medium text-[#94A3B8]">{size.size}</span>
-                              <input
-                                type="number"
-                                value={size.stock}
-                                onChange={(e) => handleSizeChange(colorIndex, sizeIndex, e)}
-                                className="w-full px-2 py-1 bg-[#0F0F0F] border border-white/10 rounded-lg text-white"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-[#94A3B8]">
+                    <svg className="w-12 h-12 mx-auto mb-3 text-[#94A3B8]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                    </svg>
+                    <p className="text-sm">لم يتم إضافة أي ألوان بعد</p>
+                    <p className="text-xs mt-1">اضغط "إضافة لون" لإضافة متغيرات الألوان</p>
                   </div>
-                ))}
-                <button type="button" onClick={addColor} className="w-full px-4 py-2 text-sm font-medium text-white bg-[#1A1A1A] border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
-                  إضافة لون جديد
-                </button>
+                )}
               </div>
+            </div>
+
+            <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                    <svg className="w-5 h-5 text-[#34D399]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                    الأبعاد (Dimensions)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {productData.measurements.map((measurement, index) => (
+                        <div key={index} className="bg-[#0F0F0F] border border-white/10 rounded-xl p-4 space-y-2">
+                            <h5 className="text-white font-medium text-sm border-b border-white/10 pb-2">{measurement.name}</h5>
+                            <div>
+                                <label className="block text-xs text-[#94A3B8]">الطول ({measurement.unit})</label>
+                                <input
+                                    type="number"
+                                    name="length"
+                                    value={measurement.length}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="w-full px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                                    placeholder="0"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-[#94A3B8]">العرض ({measurement.unit})</label>
+                                <input
+                                    type="number"
+                                    name="width"
+                                    value={measurement.width}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="w-full px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                                    placeholder="0"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-[#94A3B8]">الارتفاع ({measurement.unit})</label>
+                                <input
+                                    type="number"
+                                    name="height"
+                                    value={measurement.height}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="w-full px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                                    placeholder="0"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-[#94A3B8]">الوزن (KG)</label>
+                                <input
+                                    type="number"
+                                    name="weight"
+                                    value={measurement.weight}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="w-full px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                                    placeholder="0.0"
+                                    step="0.1"
+                                />
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    name="isDefault"
+                                    checked={measurement.isDefault}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="h-4 w-4 text-[#5E54F2] bg-[#1A1A1A] border-white/10 rounded focus:ring-[#5E54F2]"
+                                />
+                                <label className="text-xs text-[#94A3B8]">افتراضي</label>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
           </form>
         </div>

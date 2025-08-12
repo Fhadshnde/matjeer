@@ -29,7 +29,8 @@ const AddProductModal = () => {
     name: '',
     description: '',
     originalPrice: '',
-    price: '',
+    price: 0, 
+    wholesalePrice: '',
     stock: '',
     mainImageUrl: '',
     categoryId: '',
@@ -37,6 +38,11 @@ const AddProductModal = () => {
     supplierId: '',
     colors: [],
     media: [],
+    measurements: [
+      { name: 'Small', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: false },
+      { name: 'Medium', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: true },
+      { name: 'Large', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: false }
+    ]
   });
   
   const modalRef = useRef(null);
@@ -52,7 +58,8 @@ const AddProductModal = () => {
       name: '',
       description: '',
       originalPrice: '',
-      price: '',
+      price: 0,
+      wholesalePrice: '',
       stock: '',
       mainImageUrl: '',
       categoryId: '',
@@ -60,6 +67,11 @@ const AddProductModal = () => {
       supplierId: '',
       colors: [],
       media: [],
+      measurements: [
+        { name: 'Small', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: false },
+        { name: 'Medium', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: true },
+        { name: 'Large', description: '', length: 0, width: 0, height: 0, weight: 0, unit: 'CM', isDefault: false }
+      ]
     });
   };
 
@@ -169,11 +181,21 @@ const AddProductModal = () => {
     newMedia.splice(index, 1);
     setProductData(prevData => ({ ...prevData, media: newMedia }));
   };
+
+  const handleMeasurementChange = (index, e) => {
+    const { name, value, type, checked } = e.target;
+    const newMeasurements = [...productData.measurements];
+    newMeasurements[index] = {
+      ...newMeasurements[index],
+      [name]: type === 'checkbox' ? checked : (type === 'number' ? parseFloat(value) : value),
+    };
+    setProductData(prevData => ({ ...prevData, measurements: newMeasurements }));
+  };
   
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!productData.name || !productData.price || !productData.stock || 
+    if (!productData.name || !productData.wholesalePrice || !productData.stock || 
         !productData.mainImageUrl || !productData.categoryId || 
         !productData.sectionId || !productData.supplierId) {
       alert('يرجى ملء جميع الحقول المطلوبة.');
@@ -182,9 +204,9 @@ const AddProductModal = () => {
 
     const dataToSend = {
       ...productData,
-      // التحقق من أنواع البيانات وتحويلها إلى أرقام
       originalPrice: productData.originalPrice ? parseFloat(productData.originalPrice) : null,
-      price: parseFloat(productData.price),
+      price: 0,
+      wholesalePrice: parseFloat(productData.wholesalePrice),
       stock: parseInt(productData.stock, 10),
       categoryId: parseInt(productData.categoryId, 10),
       sectionId: parseInt(productData.sectionId, 10),
@@ -196,7 +218,8 @@ const AddProductModal = () => {
           ...size,
           stock: parseInt(size.stock, 10)
         })) : null,
-      }))
+      })),
+      measurements: productData.measurements
     };
 
     try {
@@ -265,11 +288,6 @@ const AddProductModal = () => {
     fetchSections();
   }, [productData.categoryId]);
   
-  const discountPercentage = 
-    (productData.originalPrice && productData.price) 
-      ? Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100)
-      : null;
-
   const modalContent = (
     <div
       className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all duration-400 ease-out ${
@@ -400,7 +418,7 @@ const AddProductModal = () => {
                 </svg>
                 التسعير والمخزون
               </h4>
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-[#94A3B8] mb-2">السعر الأصلي</label>
                   <input
@@ -414,11 +432,11 @@ const AddProductModal = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#94A3B8] mb-2">سعر البيع *</label>
+                  <label className="block text-sm font-medium text-[#94A3B8] mb-2">سعر الجملة *</label>
                   <input
-                    value={productData.price}
+                    value={productData.wholesalePrice}
                     onChange={handleInputChange}
-                    name="price"
+                    name="wholesalePrice"
                     type="number"
                     step="0.01"
                     required
@@ -438,16 +456,6 @@ const AddProductModal = () => {
                     placeholder="0"
                   />
                 </div>
-                {discountPercentage && (
-                  <div className="flex flex-col justify-end">
-                    <div className="text-center p-2 bg-[#F97316]/20 rounded-lg">
-                      <p className="text-xs text-[#94A3B8]">الخصم</p>
-                      <p className="text-lg font-bold text-[#F97316]">
-                        {discountPercentage}%
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -617,6 +625,77 @@ const AddProductModal = () => {
                   </div>
                 )}
               </div>
+            </div>
+
+            <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                    <svg className="w-5 h-5 text-[#34D399]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                    الأبعاد (Dimensions)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {productData.measurements.map((measurement, index) => (
+                        <div key={index} className="bg-[#0F0F0F] border border-white/10 rounded-xl p-4 space-y-2">
+                            <h5 className="text-white font-medium text-sm border-b border-white/10 pb-2">{measurement.name}</h5>
+                            <div>
+                                <label className="block text-xs text-[#94A3B8]">الطول ({measurement.unit})</label>
+                                <input
+                                    type="number"
+                                    name="length"
+                                    value={measurement.length}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="w-full px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                                    placeholder="0"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-[#94A3B8]">العرض ({measurement.unit})</label>
+                                <input
+                                    type="number"
+                                    name="width"
+                                    value={measurement.width}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="w-full px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                                    placeholder="0"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-[#94A3B8]">الارتفاع ({measurement.unit})</label>
+                                <input
+                                    type="number"
+                                    name="height"
+                                    value={measurement.height}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="w-full px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                                    placeholder="0"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-[#94A3B8]">الوزن (KG)</label>
+                                <input
+                                    type="number"
+                                    name="weight"
+                                    value={measurement.weight}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="w-full px-3 py-1.5 bg-[#1A1A1A] border border-white/10 rounded-lg text-white placeholder-[#94A3B8] focus:border-[#5E54F2] focus:outline-none text-sm"
+                                    placeholder="0.0"
+                                    step="0.1"
+                                />
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    name="isDefault"
+                                    checked={measurement.isDefault}
+                                    onChange={(e) => handleMeasurementChange(index, e)}
+                                    className="h-4 w-4 text-[#5E54F2] bg-[#1A1A1A] border-white/10 rounded focus:ring-[#5E54F2]"
+                                />
+                                <label className="text-xs text-[#94A3B8]">افتراضي</label>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
           </form>
         </div>
