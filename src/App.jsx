@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home.jsx'
-import Products from './pages/Products.jsx'
+import Products from './pages/Products'
 import Categories from './pages/Categories.jsx'
 import Navbar from './components/Navbar/Navbar.jsx'
 import Login from './pages/Login.jsx'
