@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import Products from './pages/Products.jsx'
 import SubSections from './pages/SubSections';
-import Suppliers from './pages/Suppliers.jsx'
 import Categories from './pages/Categories.jsx'
 import Navbar from './components/Navbar/Navbar.jsx'
 import Login from './pages/Login'
