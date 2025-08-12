@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "tailwind-init": "./node_modules/.bin/tailwindcss init -p"
+
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
