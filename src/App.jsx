@@ -1,13 +1,13 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Home from './pages/Home.jsx'
+import Home from './pages/Home'
 import Products from './pages/Products'
-import Categories from './pages/Categories.jsx'
-import Navbar from './components/Navbar/Navbar.jsx'
-import Login from './pages/Login.jsx'
-import Offers from './pages/offers.jsx'
-import suppliers from './pages/suppliers.jsx'
-import SubSections from './pages/SubSections.jsx'
+import Categories from './pages/Categories'
+import Navbar from './components/Navbar/Navbar'
+import Login from './pages/Login'
+import Offers from './pages/offers'
+import suppliers from './pages/suppliers'
+import SubSections from './pages/SubSections'
 
 const App = () => {
   return (
