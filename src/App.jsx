@@ -19,7 +19,8 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path='/products' element={<Products />} />
         {/* 💡 تم تعديل هذا السطر ليتطابق مع اسم المكون */}
-        <Route path='/subSections' element={<SubsectionsManagement />} />        <Route path='/suppliers' element={<Suppliers />} />
+        <Route path='/subSections' element={<SubSections />} />        
+                <Route path='/suppliers' element={<Suppliers />} />
         <Route path='/categories' element={<Categories />} />
         <Route path='/login' element={<Login />} />
         <Route path='/offers' element={<Offers />} />
