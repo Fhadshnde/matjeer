@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // Assuming you have these modal components created
-import AddOfferModal from '../components/addModals/offer';
-import DeleteOfferModal from '../components/deleteModal/deleteOffer';
+import AddOfferModal from '../components/AddModals/AddOfferModal';
+import DeleteOfferModal from '../components/DeleteModal/DeleteOfferModal';
 
 const OffersManagement = () => {
   const [offers, setOffers] = useState([]);

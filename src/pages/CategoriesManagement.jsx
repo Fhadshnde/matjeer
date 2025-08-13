@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 // Assuming these are your modal components. You'll need to create them.
-import AddCategoryModal from '../components/addModals/AddCategories';
-import EditCategoryModal from '../components/editModals/EditCategories';
-import DeleteCategoryModal from '../components/deleteModal/deleteCategory';
+import AddCategoryModal from '../components/AddModals/AddCategoryModal';
+import EditCategoryModal from '../components/editModals/EditCategoryModal';
+import DeleteCategoryModal from '../components/DeleteModal/DeleteCategoryModal';
 
 const CategoriesManagement = () => {
   const [categories, setCategories] = useState([]);

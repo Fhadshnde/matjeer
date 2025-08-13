@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Assuming these are your modal components
-import AddSupplierModal from '../components/addModals/supplier';
-import DeleteSupplierModal from '../components/deleteModal/deleteCategory';
+import AddSupplierModal from '../components/AddModals/AddSupplierModal';
+import DeleteSupplierModal from '../components/DeleteModal/DeleteSupplierModal';
 
 const SuppliersManagement = () => {
   const [suppliers, setSuppliers] = useState([]);

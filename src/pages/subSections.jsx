@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 // Assuming these are your modal components
-import AddSubSectionModal from '../components/addModals/subSection';
-import EditSubSectionModal from '../components/editModals/subSection';
-import DeleteSubSectionModal from '../components/deleteModal/deleteSubSection';
+import AddSubSectionModal from '../components/AddModals/AddSubSectionModal';
+import EditSubSectionModal from '../components/editModals/EditSubSectionModal';
+import DeleteSubSectionModal from '../components/DeleteModal/DeleteSubSectionModal';
 import { useNavigate } from 'react-router-dom';
 
 const SubSections = () => {

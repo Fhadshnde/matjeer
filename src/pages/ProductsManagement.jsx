@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AddProductModal from '../components/addModals/product';
-import DeleteModal from '../components/deleteModal/deleteProduct';
-import EditProductModal from '../components/editModals/product';
+import AddProductModal from '../components/AddModals/AddProductModal';
+import DeleteModal from '../components/DeleteModal/DeleteProductModal';
+import EditProductModal from '../components/editModals/EditProductModal';
 
 const ProductsManagement = () => {
   const [products, setProducts] = useState([]);
