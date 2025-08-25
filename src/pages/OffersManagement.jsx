@@ -736,7 +736,7 @@ export default function OffersManagement() {
               </div>
 
               <div className="p-6 space-y-6">
-                {/* <div className="border border-white/10 rounded-lg p-4 bg-[#0F0F0F]">
+                <div className="border border-white/10 rounded-lg p-4 bg-[#0F0F0F]">
                   <h4 className="text-lg font-semibold text-white mb-3">منتجات العرض الحالية</h4>
                   <ul className="space-y-2">
                     {offerProducts.length > 0 ? (
@@ -755,7 +755,7 @@ export default function OffersManagement() {
                       <p className="text-center text-[#94A3B8]">لا توجد منتجات في هذا العرض.</p>
                     )}
                   </ul>
-                </div> */}
+                </div>
 
                 <div className="border border-white/10 rounded-lg p-4 bg-[#0F0F0F]">
                   <h4 className="text-lg font-semibold text-white mb-3">اضافة منتجات جديدة</h4>
@@ -967,7 +967,34 @@ export default function OffersManagement() {
               >
                 جميع العروض
               </button>
-
+              <button
+                onClick={() => handleTabClick("active")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activeTab === "active"
+                    ? "bg-[#5E54F2] text-white shadow-lg shadow-[#5E54F2]/25"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+              >
+                العروض المفعلة
+              </button>
+              <button
+                onClick={() => handleTabClick("inactive")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activeTab === "inactive"
+                    ? "bg-[#5E54F2] text-white shadow-lg shadow-[#5E54F2]/25"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+              >
+                العروض الموقوفة
+              </button>
+              <button className="px-4 py-2 text-[#94A3B8] border border-[#94A3B8]/20 rounded-lg hover:bg-[#94A3B8]/10 transition-colors flex items-center gap-1">
+                <MdFilterList size={20} />
+                تصفية
+              </button>
+              <button className="px-4 py-2 text-[#94A3B8] border border-[#94A3B8]/20 rounded-lg hover:bg-[#94A3B8]/10 transition-colors flex items-center gap-1">
+                <MdDownload size={20} />
+                تصدير
+              </button>
             </div>
           </div>
           

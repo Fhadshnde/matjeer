@@ -476,11 +476,11 @@ const EditProductModal = ({ productId, onEditSuccess }) => {
                     placeholder="0"
                   />
                 </div>
-                {/* {discountPercentage && (
+                {discountPercentage && (
                   <div className="flex items-center justify-center p-2 rounded-lg bg-[#F97316]/20">
                     <p className="text-sm font-bold text-[#F97316]">{discountPercentage}% خصم</p>
                   </div>
-                )} */}
+                )}
               </div>
             </div>
 

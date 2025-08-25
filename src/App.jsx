@@ -1,31 +1,29 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import DashboardStats from './pages/DashboardStats'
-import ProductsManagement from './pages/ProductsManagement'
-import CategoriesManagement from './pages/CategoriesManagement'
-import Navbar from './components/Navbar/Navbar'
-import Login from './pages/Login'
-import OffersManagement from './pages/OffersManagement'
-import Suppliers from './pages/SubSections'
-import SuppliersManagement from './pages/SuppliersManagement'
+import Home from './pages/Home.jsx'
+import Products from './pages/ProductsManagement.jsx'
+import Categories from './pages/CategoriesManagement.jsx'
+import Navbar from './components/Navbar/Navbar.jsx'
+import Login from './pages/Login.jsx'
+import Offers from './pages/OffersManagement.jsx'
+import SubSections from './pages/SubSections.jsx'
+import Discounts from './pages/Discounts.jsx'
 
 const App = () => {
   return (
     <div>
       <Navbar />
+      
       <Routes>
-        <Route path='/' element={<DashboardStats />} />
-        <Route path='/products' element={<ProductsManagement />} />
-        <Route path='/Categories' element={<CategoriesManagement />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/products' element={<Products />} />
+        <Route path='/categories' element={<Categories />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/offers' element={<OffersManagement />} />
-        <Route path='/suppliers' element={<Suppliers />} />
-        
-
-        <Route path='/not-found' element={<h1>Page Not Found</h1>} />
-        <Route path='/error' element={<h1>Something went wrong</h1>} />
+        <Route path='/offers' element={<Offers />} />
+        <Route path='/subSections' element={<SubSections />} />
+        <Route path='/discounts' element={<Discounts />} />
         <Route path='*' element={<h1>mwdwdjwedjwd</h1>} />
-        <Route path='/subsections' element={<SuppliersManagement />} />
+
       </Routes>
     </div>
   )
